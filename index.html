@@ -269,6 +269,110 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .piece-frame.placeholder svg{ width:34px; height:34px; opacity:.5; }
   .piece-frame.placeholder span{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
 
+  /* ============================================================
+     GALLERY — carousel + zoom affordances
+     ============================================================ */
+  .piece-frame .carousel-track{
+    display:flex; width:100%; height:100%;
+    transition: transform .35s ease;
+  }
+  .piece-frame .carousel-track img{
+    flex: 0 0 100%; width:100%; height:100%; object-fit:cover;
+    cursor: zoom-in;
+  }
+  .piece-frame .carousel-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:32px; height:32px; border-radius:50%;
+    background:rgba(20,20,20,.55); border:1.5px solid rgba(255,255,255,.7);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; z-index:2; padding:0;
+    transition: background .15s, transform .15s;
+  }
+  .piece-frame .carousel-arrow:hover{ background:var(--accent); }
+  .piece-frame .carousel-arrow svg{ width:16px; height:16px; fill:none; stroke:var(--white); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+  .piece-frame .carousel-arrow.prev{ left:10px; }
+  .piece-frame .carousel-arrow.next{ right:10px; }
+  .piece-frame .carousel-dots{
+    position:absolute; bottom:10px; left:0; right:0;
+    display:flex; justify-content:center; gap:6px; z-index:2;
+  }
+  .piece-frame .carousel-dots button{
+    width:6px; height:6px; border-radius:50%; padding:0;
+    border:1px solid rgba(255,255,255,.9);
+    background:rgba(255,255,255,.35); cursor:pointer;
+  }
+  .piece-frame .carousel-dots button.active{ background:var(--white); }
+  .piece-frame .zoom-hint{
+    position:absolute; top:10px; right:10px; z-index:2;
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(20,20,20,.55);
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  .piece-frame .zoom-hint svg{ width:14px; height:14px; fill:none; stroke:var(--white); stroke-width:2.2; stroke-linecap:round; }
+
+  /* ============================================================
+     LIGHTBOX — zoomable image viewer
+     ============================================================ */
+  .lightbox-overlay{
+    position:fixed; inset:0; z-index:1000;
+    background:rgba(10,10,10,.94);
+    display:none; align-items:center; justify-content:center;
+    flex-direction:column;
+  }
+  .lightbox-overlay.open{ display:flex; }
+  .lightbox-stage{
+    position:relative;
+    width:min(92vw, 900px); height:min(80vh, 820px);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    touch-action:none;
+  }
+  .lightbox-stage img{
+    max-width:100%; max-height:100%;
+    width:auto; height:auto;
+    object-fit:contain;
+    cursor:zoom-in;
+    user-select:none; -webkit-user-drag:none;
+    transition: transform .12s ease-out;
+    transform-origin:center center;
+  }
+  .lightbox-stage img.zoomed{ cursor:grab; }
+  .lightbox-stage img.dragging{ cursor:grabbing; transition:none; }
+  .lightbox-close{
+    position:absolute; top:18px; right:18px; z-index:1002;
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.5);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .lightbox-close svg{ width:18px; height:18px; fill:none; stroke:var(--white); stroke-width:2.2; stroke-linecap:round; }
+  .lightbox-close:hover{ background:var(--accent); border-color:var(--accent); }
+  .lightbox-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:48px; height:48px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.5);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:1002;
+  }
+  .lightbox-arrow:hover{ background:var(--accent); border-color:var(--accent); }
+  .lightbox-arrow svg{ width:20px; height:20px; fill:none; stroke:var(--white); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .lightbox-arrow.prev{ left:12px; }
+  .lightbox-arrow.next{ right:12px; }
+  .lightbox-meta{
+    margin-top:16px; text-align:center; color:var(--canvas);
+    font-family:var(--ui-font);
+  }
+  .lightbox-meta .lb-title{ font-family:var(--serif-font); font-size:17px; margin:0 0 4px; }
+  .lightbox-meta .lb-counter{ font-size:12px; letter-spacing:.08em; color:#b9b9ae; }
+  .lightbox-hint{
+    margin-top:10px; font-size:11px; letter-spacing:.05em;
+    color:#8a8a82; text-transform:uppercase;
+  }
+  @media (max-width:600px){
+    .lightbox-arrow{ width:38px; height:38px; }
+    .lightbox-close{ width:36px; height:36px; top:12px; right:12px; }
+    .piece-frame .carousel-arrow{ width:28px; height:28px; }
+  }
+
   .piece-body{ text-align:center; max-width:480px; margin:0 auto; }
   .piece-num{
     font-family:var(--ui-font); font-size:11px; letter-spacing:.14em;
@@ -288,7 +392,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .piece-footer{
     display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
   }
-  .piece-price{ font-family:var(--display-font); font-size:16px; }
+  .piece-price{ font-family:var(--display-font); font-size:16px; display: none; }
   .piece-cta{
     font-family:var(--ui-font); font-size:12.5px; font-weight:600;
     letter-spacing:.04em; text-transform:uppercase;
@@ -296,6 +400,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     padding:10px 20px; text-decoration:none;
     border: 1.5px solid var(--ink);
     transition: background .15s, color .15s;
+    display: none;
   }
   .piece-cta:hover{ background:var(--white); color:var(--ink); }
   .piece-sold{
@@ -466,13 +571,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <hr class="footer-rule">
       <div class="footer-contact" id="contactFooter"></div>
       <p class="footer-delivery" id="txt-delivery-footer"></p>
-      <!-- <p class="footer-delivery">Created by <a href="https://www.instagram.com/molbrikolat/" style="color: #0095ff; text-decoration: none;text-transform: lowercase;" target="_blank" rel="noopener">mol brikolat</a></p> -->
+      <p class="footer-delivery">Created by <a href="https://www.instagram.com/molbrikolat/" style="color: #0095ff; text-decoration: none;text-transform: lowercase;" target="_blank" rel="noopener">mol brikolat</a></p>
       <hr class="footer-divider">
       <p class="footer-copy" id="txt-copyright"></p>
     </div>
   </footer>
 
   <div class="floating-contacts" id="floatingContacts"></div>
+
+  <div class="lightbox-overlay" id="lightboxOverlay">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <button class="lightbox-arrow prev" id="lightboxPrev" aria-label="Previous">
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="lightbox-stage" id="lightboxStage">
+      <img id="lightboxImg" src="" alt="">
+    </div>
+    <button class="lightbox-arrow next" id="lightboxNext" aria-label="Next">
+      <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="lightbox-meta">
+      <p class="lb-title" id="lightboxTitle"></p>
+      <p class="lb-counter" id="lightboxCounter"></p>
+      <p class="lightbox-hint" id="lightboxHint"></p>
+    </div>
+  </div>
 
 </div>
 
@@ -521,48 +646,81 @@ const GRAFFITI_CONFIG = {
 // even down to zero items. Leave "image" empty ("") to show a clean
 // placeholder frame instead of a photo.
 const ARTWORKS = [
+  // {
+  //   id: 1,
+  //   image: "https://picsum.photos/seed/artwork1/800/1000",
+  //   title: { fr: "Marées d'encre", en: "Ink Tides", ar: "مد الحبر" },
+  //   medium: { fr: "Acrylique sur toile · 80×100cm", en: "Acrylic on canvas · 80×100cm", ar: "أكريليك على قماش · 80×100 سم" },
+  //   description: {
+  //     fr: "Une composition en noir et bleu inspirée des vagues du littoral atlantique.",
+  //     en: "A black-and-blue composition inspired by the Atlantic coastline.",
+  //     ar: "تكوين بالأسود والأزرق مستوحى من أمواج الساحل الأطلسي."
+  //   },
+  //   price: 1800,
+  //   currency: "MAD",
+  //   sold: false
+  // },
   {
     id: 1,
-    image: "https://picsum.photos/seed/artwork1/800/1000",
-    title: { fr: "Marées d'encre", en: "Ink Tides", ar: "مد الحبر" },
-    medium: { fr: "Acrylique sur toile · 80×100cm", en: "Acrylic on canvas · 80×100cm", ar: "أكريليك على قماش · 80×100 سم" },
-    description: {
-      fr: "Une composition en noir et bleu inspirée des vagues du littoral atlantique.",
-      en: "A black-and-blue composition inspired by the Atlantic coastline.",
-      ar: "تكوين بالأسود والأزرق مستوحى من أمواج الساحل الأطلسي."
+    // image: "photo1.jpg",
+    images: ["photo1.jpg", "photo1.jpg"],
+    title: {
+      fr: "Éclat Solaire",
+      en: "Solar Glow",
+      ar: "توهج شمسي"
     },
+    medium: {
+      fr: "Art numérique inspiré de Tangled · 50×70cm",
+      en: "Digital art inspired by Tangled · 50×70cm",
+      ar: "فن رقمي مستوحى من فيلم رابونزل · 50×70 سم"
+    },
+    description: {
+      fr: "Une interprétation artistique de la fleur magique de Raiponce, mêlant des tons dorés vibrants à un arrière-plan tourbillonnant rappelant 'La Nuit étoilée'.",
+      en: "An artistic interpretation of the magical Sundrop flower from Tangled, blending vibrant golden tones with a swirling background reminiscent of 'The Starry Night'.",
+      ar: "تجسيد فني لزهرة الشمس السحرية من فيلم رابونزل، يمزج بين التدرجات الذهبية الحيوية وخلفية لولبية مستوحاة من أسلوب لوحة 'ليلة النجوم'."
+    },
+
     price: 1800,
     currency: "MAD",
     sold: false
   },
   {
     id: 2,
-    image: "https://picsum.photos/seed/artwork2/800/1000",
-    title: { fr: "Fragments urbains", en: "Urban Fragments", ar: "شظايا حضرية" },
-    medium: { fr: "Technique mixte sur bois · 60×80cm", en: "Mixed media on wood · 60×80cm", ar: "تقنية مختلطة على خشب · 60×80 سم" },
-    description: {
-      fr: "Collage et peinture, entre graffiti et calme géométrique.",
-      en: "Collage and paint, between graffiti energy and geometric calm.",
-      ar: "كولاج وطلاء، بين طاقة الغرافيتي والهدوء الهندسي."
+    images: ["photo2.jpg", "photo2.jpg"],
+    title: {
+      fr: "Sérénité sylvestre",
+      en: "Sylvan Serenity",
+      ar: "سكينة الغاب"
     },
+    medium: {
+      fr: "Aquarelle sur papier · 30×40cm",
+      en: "Watercolor on paper · 30×40cm",
+      ar: "ألوان مائية على ورق · 30×40 سم"
+    },
+    description: {
+      fr: "Illustration douce mêlant la rêverie littéraire à la poésie de la nature sauvage.",
+      en: "A soft illustration blending literary daydreaming with the poetry of wild nature.",
+      ar: "رسم توضيحي ناعم يمزج بين أحلام اليقظة الأدبية وشاعرية الطبيعة البرية."
+    },
+
     price: 2400,
     currency: "MAD",
     sold: false
   },
-  {
-    id: 3,
-    image: "https://www.moma.org/d/assets/W1siZiIsIjIwMTcvMDYvMjIvMWRvbXNncXgyZl8xNDk0NjkxNjkyXzgwM19XaGl0ZV9QYWludGluZy5qcGciXSxbInAiLCJjb252ZXJ0IiwiLXF1YWxpdHkgOTAgLXJlc2l6ZSAyMDAweDIwMDBcdTAwM2UiXV0/1494691692_803_White_Painting.jpg?sha=6e55571522bf7913",
-    title: { fr: "Silence blanc", en: "White Silence", ar: "صمت أبيض" },
-    medium: { fr: "Huile sur toile · 50×70cm", en: "Oil on canvas · 50×70cm", ar: "زيت على قماش · 50×70 سم" },
-    description: {
-      fr: "Une pièce minimale, texturée, pensée pour un intérieur épuré.",
-      en: "A minimal, textured piece designed for a pared-back interior.",
-      ar: "قطعة بسيطة ذات ملمس، صُممت لديكور داخلي هادئ."
-    },
-    price: 1500,
-    currency: "MAD",
-    sold: true
-  }
+  // {
+  //   id: 3,
+  //   image: "https://www.moma.org/d/assets/W1siZiIsIjIwMTcvMDYvMjIvMWRvbXNncXgyZl8xNDk0NjkxNjkyXzgwM19XaGl0ZV9QYWludGluZy5qcGciXSxbInAiLCJjb252ZXJ0IiwiLXF1YWxpdHkgOTAgLXJlc2l6ZSAyMDAweDIwMDBcdTAwM2UiXV0/1494691692_803_White_Painting.jpg?sha=6e55571522bf7913",
+  //   title: { fr: "Silence blanc", en: "White Silence", ar: "صمت أبيض" },
+  //   medium: { fr: "Huile sur toile · 50×70cm", en: "Oil on canvas · 50×70cm", ar: "زيت على قماش · 50×70 سم" },
+  //   description: {
+  //     fr: "Une pièce minimale, texturée, pensée pour un intérieur épuré.",
+  //     en: "A minimal, textured piece designed for a pared-back interior.",
+  //     ar: "قطعة بسيطة ذات ملمس، صُممت لديكور داخلي هادئ."
+  //   },
+  //   price: 1500,
+  //   currency: "MAD",
+  //   sold: true
+  // }
 ];
 
 /* =====================================================================
@@ -690,6 +848,16 @@ function priceLabel(piece){
   return '<span class="num">' + piece.price.toLocaleString() + '</span> ' + piece.currency;
 }
 
+// Returns the list of photos for a piece. Supports the existing single
+// "image" field as well as an optional "images: [...]" array, so nothing
+// about the current data needs to change for the carousel to work.
+function getPieceImages(piece){
+  if(Array.isArray(piece.images) && piece.images.length){
+    return piece.images.filter(Boolean);
+  }
+  return piece.image ? [piece.image] : [];
+}
+
 function renderGallery(){
   const list = document.getElementById("galleryList");
   const count = document.getElementById("galleryCount");
@@ -716,9 +884,36 @@ function renderGallery(){
 
     const placeholderLabel = currentLang === "ar" ? "الصورة قريباً" : currentLang === "fr" ? "Image à venir" : "Image coming soon";
 
-    const frameHtml = piece.image
-      ? '<div class="piece-frame"><div class="corner tl"></div><div class="corner br"></div><img src="' + piece.image + '" alt="' + (piece.title[currentLang] || "") + '"></div>'
-      : '<div class="piece-frame placeholder">' + ICONS.imgOff + '<span>' + placeholderLabel + '</span></div>';
+    const images = getPieceImages(piece);
+    const pieceTitle = piece.title[currentLang] || "";
+
+    let frameHtml;
+    if(images.length){
+      const slidesHtml = images.map(function(src, imgIdx){
+        return '<img src="' + src + '" alt="' + pieceTitle + '" data-img-index="' + imgIdx + '">';
+      }).join("");
+
+      const arrowsHtml = images.length > 1
+        ? '<button type="button" class="carousel-arrow prev" data-action="prev" aria-label="Previous image"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>' +
+          '<button type="button" class="carousel-arrow next" data-action="next" aria-label="Next image"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>'
+        : "";
+
+      const dotsHtml = images.length > 1
+        ? '<div class="carousel-dots">' + images.map(function(_, imgIdx){
+            return '<button type="button" data-dot-index="' + imgIdx + '" class="' + (imgIdx === 0 ? "active" : "") + '" aria-label="Go to image ' + (imgIdx + 1) + '"></button>';
+          }).join("") + '</div>'
+        : "";
+
+      frameHtml =
+        '<div class="piece-frame" data-piece-index="' + index + '" data-active-index="0">' +
+          '<div class="corner tl"></div><div class="corner br"></div>' +
+          '<div class="carousel-track" style="transform:translateX(0%);">' + slidesHtml + '</div>' +
+          arrowsHtml + dotsHtml +
+          '<div class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L20 20M10 7v6M7 10h6"/></svg></div>' +
+        '</div>';
+    } else {
+      frameHtml = '<div class="piece-frame placeholder">' + ICONS.imgOff + '<span>' + placeholderLabel + '</span></div>';
+    }
 
     const footerHtml = piece.sold
       ? '<span class="piece-sold">' + t.sold + '</span>'
@@ -736,6 +931,8 @@ function renderGallery(){
 
     list.appendChild(el);
   });
+
+  bindCarouselSwipe();
 }
 
 function applyTranslations(){
@@ -767,11 +964,279 @@ document.getElementById("langSwitch").addEventListener("click", function(e){
 });
 
 /* =====================================================================
-   5) INIT
+   5) GALLERY CAROUSEL — arrows, dots, swipe
+   ===================================================================== */
+function setActiveSlide(frame, newIndex){
+  const track = frame.querySelector(".carousel-track");
+  const slides = track.children;
+  const total = slides.length;
+  if(total === 0) return;
+  const clamped = ((newIndex % total) + total) % total;
+  track.style.transform = "translateX(-" + (clamped * 100) + "%)";
+  frame.setAttribute("data-active-index", String(clamped));
+  frame.querySelectorAll(".carousel-dots button").forEach(function(dot, i){
+    dot.classList.toggle("active", i === clamped);
+  });
+}
+
+function bindCarouselSwipe(){
+  const list = document.getElementById("galleryList");
+  list.querySelectorAll(".piece-frame").forEach(function(frame){
+    const track = frame.querySelector(".carousel-track");
+    if(!track || track.children.length < 2 || track.dataset.swipeBound) return;
+    track.dataset.swipeBound = "1";
+    let startX = 0, startY = 0, dragging = false;
+
+    track.addEventListener("pointerdown", function(e){
+      startX = e.clientX; startY = e.clientY; dragging = true;
+    });
+    track.addEventListener("pointerup", function(e){
+      if(!dragging) return;
+      dragging = false;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+        const current = parseInt(frame.getAttribute("data-active-index"), 10) || 0;
+        setActiveSlide(frame, current + (dx < 0 ? 1 : -1));
+      }
+    });
+    track.addEventListener("pointercancel", function(){ dragging = false; });
+  });
+}
+
+function initGalleryInteractions(){
+  const list = document.getElementById("galleryList");
+
+  list.addEventListener("click", function(e){
+    const arrowBtn = e.target.closest(".carousel-arrow");
+    if(arrowBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      const frame = arrowBtn.closest(".piece-frame");
+      const current = parseInt(frame.getAttribute("data-active-index"), 10) || 0;
+      const dir = arrowBtn.dataset.action === "next" ? 1 : -1;
+      setActiveSlide(frame, current + dir);
+      return;
+    }
+
+    const dotBtn = e.target.closest("[data-dot-index]");
+    if(dotBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      const frame = dotBtn.closest(".piece-frame");
+      setActiveSlide(frame, parseInt(dotBtn.dataset.dotIndex, 10) || 0);
+      return;
+    }
+
+    const img = e.target.closest(".carousel-track img");
+    if(img){
+      const frame = img.closest(".piece-frame");
+      const pieceIndex = parseInt(frame.getAttribute("data-piece-index"), 10);
+      const imgIndex = parseInt(img.getAttribute("data-img-index"), 10) || 0;
+      openLightbox(pieceIndex, imgIndex);
+    }
+  });
+
+  bindCarouselSwipe();
+}
+
+/* =====================================================================
+   6) LIGHTBOX — click to zoom, drag to pan, wheel/pinch zoom
+   ===================================================================== */
+const lightboxState = {
+  pieceIndex: 0,
+  imageIndex: 0,
+  images: [],
+  scale: 1,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  dragStartX: 0,
+  dragStartY: 0,
+  panStartX: 0,
+  panStartY: 0
+};
+
+const lb = {
+  overlay: null, stage: null, img: null,
+  title: null, counter: null, hint: null,
+  prevBtn: null, nextBtn: null, closeBtn: null
+};
+
+function cacheLightboxEls(){
+  lb.overlay = document.getElementById("lightboxOverlay");
+  lb.stage = document.getElementById("lightboxStage");
+  lb.img = document.getElementById("lightboxImg");
+  lb.title = document.getElementById("lightboxTitle");
+  lb.counter = document.getElementById("lightboxCounter");
+  lb.hint = document.getElementById("lightboxHint");
+  lb.prevBtn = document.getElementById("lightboxPrev");
+  lb.nextBtn = document.getElementById("lightboxNext");
+  lb.closeBtn = document.getElementById("lightboxClose");
+}
+
+function lightboxHintText(){
+  if(currentLang === "ar") return "انقر للتكبير · اسحب للتحريك";
+  if(currentLang === "fr") return "Cliquez pour zoomer · glissez pour déplacer";
+  return "Click to zoom · drag to pan";
+}
+
+function resetZoom(){
+  lightboxState.scale = 1;
+  lightboxState.panX = 0;
+  lightboxState.panY = 0;
+  applyZoomTransform();
+  lb.img.classList.remove("zoomed", "dragging");
+}
+
+function applyZoomTransform(){
+  lb.img.style.transform = "translate(" + lightboxState.panX + "px, " + lightboxState.panY + "px) scale(" + lightboxState.scale + ")";
+}
+
+function updateLightboxContent(){
+  const piece = ARTWORKS[lightboxState.pieceIndex];
+  const images = getPieceImages(piece);
+  lightboxState.images = images;
+  const src = images[lightboxState.imageIndex];
+  lb.img.src = src || "";
+  lb.img.alt = piece.title[currentLang] || "";
+  lb.title.textContent = piece.title[currentLang] || "";
+  lb.counter.textContent = images.length > 1
+    ? (lightboxState.imageIndex + 1) + " / " + images.length
+    : "";
+  lb.hint.textContent = lightboxHintText();
+  const multi = images.length > 1;
+  lb.prevBtn.style.display = multi ? "flex" : "none";
+  lb.nextBtn.style.display = multi ? "flex" : "none";
+  resetZoom();
+}
+
+function openLightbox(pieceIndex, imageIndex){
+  lightboxState.pieceIndex = pieceIndex;
+  lightboxState.imageIndex = imageIndex || 0;
+  updateLightboxContent();
+  lb.overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox(){
+  lb.overlay.classList.remove("open");
+  document.body.style.overflow = "";
+  resetZoom();
+}
+
+function lightboxStep(dir){
+  const total = lightboxState.images.length;
+  if(total < 2) return;
+  lightboxState.imageIndex = ((lightboxState.imageIndex + dir) % total + total) % total;
+  updateLightboxContent();
+}
+
+function initLightbox(){
+  cacheLightboxEls();
+
+  lb.closeBtn.addEventListener("click", closeLightbox);
+  lb.overlay.addEventListener("click", function(e){
+    if(e.target === lb.overlay) closeLightbox();
+  });
+  lb.prevBtn.addEventListener("click", function(){ lightboxStep(-1); });
+  lb.nextBtn.addEventListener("click", function(){ lightboxStep(1); });
+
+  document.addEventListener("keydown", function(e){
+    if(!lb.overlay.classList.contains("open")) return;
+    if(e.key === "Escape") closeLightbox();
+    else if(e.key === "ArrowRight") lightboxStep(1);
+    else if(e.key === "ArrowLeft") lightboxStep(-1);
+  });
+
+  // Click to toggle zoom in/out
+  lb.img.addEventListener("click", function(e){
+    if(lightboxState.isDragging) return;
+    if(lightboxState.scale === 1){
+      lightboxState.scale = 2.2;
+      lb.img.classList.add("zoomed");
+    } else {
+      lightboxState.scale = 1;
+      lightboxState.panX = 0;
+      lightboxState.panY = 0;
+      lb.img.classList.remove("zoomed");
+    }
+    applyZoomTransform();
+  });
+
+  // Wheel to zoom, clamped
+  lb.stage.addEventListener("wheel", function(e){
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.2 : -0.2;
+    const next = Math.min(4, Math.max(1, lightboxState.scale + delta));
+    lightboxState.scale = next;
+    if(next === 1){ lightboxState.panX = 0; lightboxState.panY = 0; lb.img.classList.remove("zoomed"); }
+    else{ lb.img.classList.add("zoomed"); }
+    applyZoomTransform();
+  }, { passive:false });
+
+  // Drag to pan when zoomed
+  lb.img.addEventListener("pointerdown", function(e){
+    if(lightboxState.scale === 1) return;
+    lightboxState.isDragging = true;
+    lightboxState.dragStartX = e.clientX;
+    lightboxState.dragStartY = e.clientY;
+    lightboxState.panStartX = lightboxState.panX;
+    lightboxState.panStartY = lightboxState.panY;
+    lb.img.classList.add("dragging");
+    lb.img.setPointerCapture(e.pointerId);
+  });
+  lb.img.addEventListener("pointermove", function(e){
+    if(!lightboxState.isDragging) return;
+    lightboxState.panX = lightboxState.panStartX + (e.clientX - lightboxState.dragStartX);
+    lightboxState.panY = lightboxState.panStartY + (e.clientY - lightboxState.dragStartY);
+    applyZoomTransform();
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach(function(evt){
+    lb.img.addEventListener(evt, function(){
+      lightboxState.isDragging = false;
+      lb.img.classList.remove("dragging");
+    });
+  });
+
+  // Basic pinch-to-zoom on touch devices
+  let pinchStartDist = null;
+  let pinchStartScale = 1;
+  lb.stage.addEventListener("touchstart", function(e){
+    if(e.touches.length === 2){
+      pinchStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartScale = lightboxState.scale;
+    }
+  }, { passive:true });
+  lb.stage.addEventListener("touchmove", function(e){
+    if(e.touches.length === 2 && pinchStartDist){
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const next = Math.min(4, Math.max(1, pinchStartScale * (dist / pinchStartDist)));
+      lightboxState.scale = next;
+      lb.img.classList.toggle("zoomed", next > 1);
+      applyZoomTransform();
+    }
+  }, { passive:false });
+  lb.stage.addEventListener("touchend", function(e){
+    if(e.touches.length < 2) pinchStartDist = null;
+  });
+}
+
+/* =====================================================================
+   7) INIT
    ===================================================================== */
 renderContacts();
 renderGraffiti();
 setLang("fr");
+initLightbox();
+initGalleryInteractions();
 </script>
 </body>
 </html>
