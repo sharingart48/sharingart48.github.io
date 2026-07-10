@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHARING ART 4 ∞ — ORIGINAL WORKS — MADE BY HAND</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Rubik+Spray+Paint&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Momo+Signature&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="icon.png" sizes="275x275">
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root{
+    --canvas:#F7F7F2;
+    --canvas-alt:#EFEEE6;
+    --ink:#141414;
+    --ink-soft:#3a3a37;
+    --concrete:#8a8a82;
+    --concrete-light:#d8d6cc;
+    --accent:#2B4CFF;
+    --accent-ink:#0e1f8f;
+    --white:#ffffff;
+    --line: 1px solid var(--ink);
+    --line-soft: 1px solid var(--concrete-light);
+    --display-font: 'Archivo Black', 'Cairo', sans-serif;
+    --momo-font: 'Momo Signature', sans-serif;
+    --serif-font: 'Fraunces', 'Cairo', serif;
+    --ui-font: 'Inter', 'Cairo', sans-serif;
+    --spray-font: 'Rubik Spray Paint', 'Cairo', cursive;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:var(--ui-font);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Arabic locale swaps default running text to Cairo across the board */
+  body.lang-ar{ --ui-font:'Cairo', sans-serif; --serif-font:'Cairo', sans-serif; }
+  body.lang-ar .site-title{ 
+    /*font-family:'Cairo', sans-serif;*/
+    font-family:var(--momo-font);
+    font-weight:800; }
+
+  [dir="ltr"] .num, [dir="rtl"] .num{ direction:ltr; unicode-bidi:isolate; }
+
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:0 24px; }
+
+  /* ============================================================
+     HEADER & GLOBAL NAVIGATION
+     ============================================================ */
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    background: rgba(251, 251, 250, 0.85);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+  }
+
+  /* ============================================================
+     TOPBAR
+     ============================================================ */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+    border-bottom: var(--line-soft);
+    max-width:960px; margin:0 auto;
+    gap:16px; flex-wrap:wrap;
+  }
+  .contact-inline{ display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
+  .contact-inline a{
+    display:inline-flex; align-items:center; gap:6px;
+    text-decoration:none; font-size:13px; letter-spacing:.02em;
+    color:var(--ink-soft);
+  }
+  .contact-inline a svg{ width:16px; height:16px; fill:var(--ink-soft); }
+  .contact-inline a:hover{ color:var(--accent); }
+  .contact-inline a:hover svg{ fill:var(--accent); }
+
+  .lang-switch{ display:flex; gap:2px; border: var(--line); }
+  .lang-switch button{
+    font-family:var(--ui-font); font-size:12px; font-weight:600; letter-spacing:.05em;
+    background:none; border:none; padding:6px 12px; cursor:pointer; color:var(--ink-soft);
+  }
+  .lang-switch button.active{ background:var(--ink); color:var(--white); }
+  .lang-switch button:not(.active):hover{ background:var(--canvas-alt); }
+
+  .footer-divider {
+    border: none;
+    border-top: 1px solid #2c2a23;
+    margin: 0 0 18px;
+  }
+
+  /* ============================================================
+     GRAFFITI FEATURE — top strip mode
+     ============================================================ */
+  .graffiti-top{
+    background:var(--ink);
+    color:var(--white);
+    padding:10px 0;
+    overflow:hidden;
+    white-space:nowrap;
+    border-bottom: var(--line);
+  }
+  .graffiti-top .track{
+    display:inline-block;
+    font-family:var(--spray-font);
+    font-size:26px;
+    letter-spacing:.04em;
+    animation: scrollTag 22s linear infinite;
+  }
+  .graffiti-top .track span{ padding:0 28px; opacity:.92; }
+  @keyframes scrollTag{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+
+  /* GRAFFITI FEATURE — background watermark mode */
+  .graffiti-bg{
+    position:absolute;
+    inset:0;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    z-index:0;
+    pointer-events:none;
+  }
+  .graffiti-bg span{
+    font-family:var(--spray-font);
+    font-size:min(22vw, 260px);
+    color:var(--ink);
+    opacity:.05;
+    white-space:nowrap;
+    transform:rotate(-6deg);
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .site-header{ position:relative; }
+  .hero{
+    position:relative; z-index:1;
+    max-width:960px; margin:0 auto;
+    padding:64px 24px 40px;
+    text-align:center;
+  }
+  .site-title{
+    font-family:var(--momo-font);
+    font-size:clamp(34px, 7vw, 72px);
+    line-height:0.98;
+    margin:0 0 18px;
+    /*margin: -8px 0px 5px;*/
+    text-transform:lowercase;
+    /*letter*/-spacing:-.01em;
+  }
+  .site-title .infinity{ color:var(--accent); }
+  .tagline{
+    font-family:var(--serif-font);
+    font-style:italic;
+    font-size:clamp(19px, 2.4vw, 20px);
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto 22px;
+    font-weight:400;
+  }
+  .delivery-line{
+    display:inline-block;
+    font-family:var(--ui-font);
+    font-size:15px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--white);
+    background:var(--accent);
+    padding:7px 16px;
+  }
+
+  /* ============================================================
+     INTRO
+     ============================================================ */
+  .intro{
+    max-width:640px; margin:0 auto;
+    padding:8px 24px 56px;
+    text-align:center;
+  }
+  .intro p{
+    font-size:15.5px; line-height:1.7; color:var(--ink-soft); margin:0;
+  }
+
+  /* ============================================================
+     GALLERY — vertical stack
+     ============================================================ */
+  .gallery{ max-width:760px; margin:0 auto; padding:0 24px 100px; }
+  .gallery-heading{
+    display:flex; align-items:baseline; justify-content:space-between;
+    border-bottom: var(--line);
+    padding-bottom:10px; margin-bottom:8px;
+  }
+  .gallery-heading h2{
+    font-family:var(--display-font);
+    font-size:14px; text-transform:uppercase; letter-spacing:.14em;
+    margin:0;
+  }
+  .gallery-heading .count{ font-size:12px; color:var(--concrete); font-family:var(--ui-font); }
+
+  .piece{
+    display:grid; grid-template-columns: 1fr;
+    border-bottom: var(--line-soft);
+    padding:44px 0;
+  }
+  .piece:first-of-type{ padding-top:32px; }
+
+  .piece-frame{
+    position:relative;
+    border: 1.5px solid var(--ink);
+    background:var(--canvas-alt);
+    aspect-ratio: 4 / 5;
+    max-width:420px;
+    margin:0 auto 26px;
+    overflow:hidden;
+  }
+  .piece-frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .piece-frame .corner{
+    position:absolute; width:14px; height:14px;
+    border-color:var(--accent); border-style:solid; border-width:0;
+  }
+  .piece-frame .corner.tl{ top:-1.5px; left:-1.5px; border-top-width:3px; border-left-width:3px; }
+  .piece-frame .corner.br{ bottom:-1.5px; right:-1.5px; border-bottom-width:3px; border-right-width:3px; }
+
+  .piece-frame.placeholder{
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:8px;
+    color:var(--concrete);
+  }
+  .piece-frame.placeholder svg{ width:34px; height:34px; opacity:.5; }
+  .piece-frame.placeholder span{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+
+  .piece-body{ text-align:center; max-width:480px; margin:0 auto; }
+  .piece-num{
+    font-family:var(--ui-font); font-size:11px; letter-spacing:.14em;
+    color:var(--accent); font-weight:600; margin-bottom:8px;
+  }
+  .piece-title{
+    font-family:var(--serif-font); font-weight:600;
+    font-size:22px; margin:0 0 6px;
+  }
+  .piece-meta{
+    font-size:12.5px; color:var(--concrete); margin:0 0 14px;
+    letter-spacing:.02em;
+  }
+  .piece-desc{
+    font-size:14px; line-height:1.65; color:var(--ink-soft); margin:0 0 18px;
+  }
+  .piece-footer{
+    display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;
+  }
+  .piece-price{ font-family:var(--display-font); font-size:16px; }
+  .piece-cta{
+    font-family:var(--ui-font); font-size:12.5px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+    background:var(--ink); color:var(--white);
+    padding:10px 20px; text-decoration:none;
+    border: 1.5px solid var(--ink);
+    transition: background .15s, color .15s;
+  }
+  .piece-cta:hover{ background:var(--white); color:var(--ink); }
+  .piece-sold{
+    font-family:var(--ui-font); font-size:11px; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--concrete); border:1px solid var(--concrete-light);
+    padding:9px 16px;
+  }
+
+  /* Empty state — shown when the ARTWORKS array is empty */
+  .gallery-empty{
+    text-align:center; padding:70px 20px;
+    border: 1.5px dashed var(--concrete-light);
+  }
+  .gallery-empty h3{
+    font-family:var(--serif-font); font-size:20px; margin:0 0 8px;
+  }
+  .gallery-empty p{ color:var(--concrete); font-size:14px; margin:0; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .site-footer{
+    border-top: var(--line);
+    background:var(--ink); color:var(--canvas);
+    padding:48px 24px 32px;
+  }
+  .footer-inner{
+    max-width:760px; margin:0 auto; text-align:center;
+  }
+  .footer-title{
+    /*font-family:var(--display-font);*/
+    font-family:var(--momo-font);
+    font-size:20px; text-transform:lowercase; margin:0 0 18px;
+  }
+  .footer-contact{
+    display:flex; justify-content:center; gap:24px; flex-wrap:wrap; margin-bottom:22px;
+  }
+  .footer-contact a{
+    display:inline-flex; align-items:center; gap:7px;
+    text-decoration:none; color:var(--canvas); font-size:13.5px;
+  }
+  .footer-contact a svg{ width:17px; height:17px; fill:var(--canvas); }
+  .footer-contact a:hover{ color:var(--accent); }
+  .footer-contact a:hover svg{ fill:var(--accent); }
+  .footer-delivery{
+    font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    color:#b9b9ae; margin:0 0 22px;
+  }
+  .footer-copy{ font-size:11.5px; color:#6f6f65; margin:0; }
+
+  /* ============================================================
+     FLOATING CONTACTS
+     ============================================================ */
+  .floating-contacts{
+    position:fixed; bottom:22px; right:22px; z-index:50;
+    display:flex; flex-direction:column; gap:10px; align-items:flex-end;
+  }
+
+  .footer-rule {
+    width: 36px;
+    height: 1px;
+    background: #3c392f;
+    margin: 0 auto 30px;
+    border: none;
+  }
+
+  body.lang-ar .floating-contacts{ right:auto; left:22px; align-items:flex-start; }
+  .floating-btn{
+    width:46px; height:46px; border-radius:50%;
+    background:var(--ink); border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    text-decoration:none; 
+    /*box-shadow:0 4px 14px rgba(0,0,0,.2);*/
+    box-shadow: 0px 0px 7px 0px rgb(255 255 255 / 42%);
+    transition: transform .15s, background .15s;
+  }
+  .floating-btn svg{ width:20px; height:20px; fill:var(--white); }
+  .floating-btn:hover{ transform:translateY(-2px) scale(1.05); background:var(--accent); border-color:var(--accent); }
+
+  @media (max-width:600px){
+    .topbar{ padding:14px 16px; }
+    .hero{ padding:44px 16px 30px; }
+    .intro{ padding:0 16px 40px; }
+    .gallery{ padding:0 16px 80px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .graffiti-top .track{ animation:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* Responsive Rules Matrix */
+  @media (max-width: 868px) {
+    .gallery-grid { grid-template-columns: 1fr; gap: 60px; }
+    .hero { padding: 60px 0; }
+    .navbar { padding: 16px 24px; }
+  }
+  @media (max-width: 600px) {
+    .contact-inline { display: none; } /* Kept safe in footer */
+    .navbar { justify-content: center; gap: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .graffiti-top .track { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+  <nav class="navbar">
+    <div class="contact-inline" id="contactInlineTop"></div>
+    <div class="lang-switch" id="langSwitch">
+      <button data-lang="fr">FR</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="ar">AR</button>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <!-- <div class="topbar"> -->
+      <!-- <div class="contact-inline" id="contactInlineTop"></div> -->
+      <!-- Retained Structural Topbar/Navigation Elements with Elevated Layout -->
+      
+    <!-- </div> -->
+
+    <!-- Graffiti feature: top-strip mode renders here -->
+    <div class="graffiti-top" id="graffitiTop" style="display:none;">
+      <div class="track" id="graffitiTrack"></div>
+    </div>
+
+    <div class="hero">
+      <!-- Graffiti feature: background-watermark mode renders here -->
+      <div class="graffiti-bg" id="graffitiBg" style="display:none;"><span id="graffitiBgText"></span></div>
+
+      <h1 class="site-title" dir="ltr">sharing art <span class="infinity">4 ∞</span>  </h1>
+      <img src="typography.svg" alt="sharing art 4 ∞" style="max-width:420px; width:100%; margin:0 auto 0px; border:0px solid var(--ink); display:block;">
+      <p class="tagline" id="txt-tagline"></p>
+      <p class="delivery-line" id="txt-delivery-top"></p>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p id="txt-intro"></p>
+    </section>
+
+
+    <!-- <section class="gallery" style="display: none;"> -->
+    <section class="gallery">
+      <div class="gallery-heading">
+        <h2 id="txt-gallery-heading"></h2>
+        <span class="count" id="galleryCount"></span>
+      </div>
+      <div id="galleryList"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-title" dir="ltr">sharing art 4 ∞</p>
+      <hr class="footer-rule">
+      <div class="footer-contact" id="contactFooter"></div>
+      <p class="footer-delivery" id="txt-delivery-footer"></p>
+      <!-- <p class="footer-delivery">Created by <a href="https://www.instagram.com/molbrikolat/" style="color: #0095ff; text-decoration: none;text-transform: lowercase;" target="_blank" rel="noopener">mol brikolat</a></p> -->
+      <hr class="footer-divider">
+      <p class="footer-copy" id="txt-copyright"></p>
+    </div>
+  </footer>
+
+  <div class="floating-contacts" id="floatingContacts"></div>
+
+</div>
+
+<script>
+/* =====================================================================
+   1) SITE / CONTACT / GRAFFITI CONFIG
+   Edit the values below — nothing else needs to change.
+   ===================================================================== */
+
+// --- Contacts -----------------------------------------------------
+// enabled  : show or hide this contact everywhere
+// floating : true = also show as a floating round button on the page
+const CONTACT_CONFIG = {
+  instagram: {
+    enabled: true,
+    floating: true,
+    label: "Instagram",
+    url: "https://instagram.com/sharing_art48"
+  },
+  phone: {
+    enabled: true,
+    floating: true,
+    label: "+212 6 52 61 80 38",
+    url: "tel:+212652618038"
+  },
+  whatsapp: {
+    enabled: true,
+    floating: true,
+    label: "WhatsApp",
+    url: "https://wa.me/212652618038"
+  }
+};
+
+// --- Graffiti text feature -----------------------------------------
+// mode: "top"  -> scrolling black strip near the header
+//       "bg"   -> huge faint watermark behind the hero
+//       "none" -> hide the graffiti feature entirely
+const GRAFFITI_CONFIG = {
+  enabled: true,
+  mode: "none",
+  text: "SHARING ART 4 ∞ — ORIGINAL WORKS — MADE BY HAND"
+};
+
+// --- Artworks --------------------------------------------------------
+// Add, remove, or reorder items freely — the page adapts automatically,
+// even down to zero items. Leave "image" empty ("") to show a clean
+// placeholder frame instead of a photo.
+const ARTWORKS = [
+  {
+    id: 1,
+    image: "https://picsum.photos/seed/artwork1/800/1000",
+    title: { fr: "Marées d'encre", en: "Ink Tides", ar: "مد الحبر" },
+    medium: { fr: "Acrylique sur toile · 80×100cm", en: "Acrylic on canvas · 80×100cm", ar: "أكريليك على قماش · 80×100 سم" },
+    description: {
+      fr: "Une composition en noir et bleu inspirée des vagues du littoral atlantique.",
+      en: "A black-and-blue composition inspired by the Atlantic coastline.",
+      ar: "تكوين بالأسود والأزرق مستوحى من أمواج الساحل الأطلسي."
+    },
+    price: 1800,
+    currency: "MAD",
+    sold: false
+  },
+  {
+    id: 2,
+    image: "https://picsum.photos/seed/artwork2/800/1000",
+    title: { fr: "Fragments urbains", en: "Urban Fragments", ar: "شظايا حضرية" },
+    medium: { fr: "Technique mixte sur bois · 60×80cm", en: "Mixed media on wood · 60×80cm", ar: "تقنية مختلطة على خشب · 60×80 سم" },
+    description: {
+      fr: "Collage et peinture, entre graffiti et calme géométrique.",
+      en: "Collage and paint, between graffiti energy and geometric calm.",
+      ar: "كولاج وطلاء، بين طاقة الغرافيتي والهدوء الهندسي."
+    },
+    price: 2400,
+    currency: "MAD",
+    sold: false
+  },
+  {
+    id: 3,
+    image: "https://www.moma.org/d/assets/W1siZiIsIjIwMTcvMDYvMjIvMWRvbXNncXgyZl8xNDk0NjkxNjkyXzgwM19XaGl0ZV9QYWludGluZy5qcGciXSxbInAiLCJjb252ZXJ0IiwiLXF1YWxpdHkgOTAgLXJlc2l6ZSAyMDAweDIwMDBcdTAwM2UiXV0/1494691692_803_White_Painting.jpg?sha=6e55571522bf7913",
+    title: { fr: "Silence blanc", en: "White Silence", ar: "صمت أبيض" },
+    medium: { fr: "Huile sur toile · 50×70cm", en: "Oil on canvas · 50×70cm", ar: "زيت على قماش · 50×70 سم" },
+    description: {
+      fr: "Une pièce minimale, texturée, pensée pour un intérieur épuré.",
+      en: "A minimal, textured piece designed for a pared-back interior.",
+      ar: "قطعة بسيطة ذات ملمس، صُممت لديكور داخلي هادئ."
+    },
+    price: 1500,
+    currency: "MAD",
+    sold: true
+  }
+];
+
+/* =====================================================================
+   2) TRANSLATIONS — extend or edit freely
+   ===================================================================== */
+const I18N = {
+  fr: {
+    dir: "ltr",
+    tagline: "Peintures et œuvres originales, choisies avec soin, partagées sans limite.",
+    delivery: "Livraison à Mohammadia, Casablanca et Rabat",
+    intro: "Chaque œuvre présentée ici est originale et disponible à la vente. Un mélange d'expression libre et de finitions soignées — pensé pour vivre aussi bien dans un salon que dans un bureau.",
+    galleryHeading: "La galerie",
+    piece: "Pièce",
+    inquire: "Je suis intéressé(e)",
+    sold: "Vendu",
+    emptyTitle: "Nouvelles œuvres en préparation",
+    emptyBody: "La galerie est en cours de mise à jour — revenez bientôt pour découvrir les prochaines pièces.",
+    copyright: "© " + new Date().getFullYear() + " sharing art 4 ∞ — Tous droits réservés."
+  },
+  en: {
+    dir: "ltr",
+    tagline: "Original paintings and artworks, carefully chosen, shared without limit.",
+    delivery: "Delivery to Mohammadia, Casablanca and Rabat",
+    intro: "Every piece shown here is original and available for purchase. A mix of free expression and careful finishing — made to feel at home in a living room or an office.",
+    galleryHeading: "The gallery",
+    piece: "Piece",
+    inquire: "I'm interested",
+    sold: "Sold",
+    emptyTitle: "New work coming soon",
+    emptyBody: "The gallery is being refreshed — check back soon for the next pieces.",
+    copyright: "© " + new Date().getFullYear() + " sharing art 4 ∞ — All rights reserved."
+  },
+  ar: {
+    dir: "rtl",
+    tagline: "لوحات وأعمال فنية أصلية، مختارة بعناية، تُشارَك بلا حدود.",
+    delivery: "التوصيل إلى المحمدية، الدار البيضاء والرباط",
+    intro: "كل عمل معروض هنا أصلي ومتاح للبيع. مزيج من التعبير الحر والإتقان في التنفيذ — مصمم ليلائم الصالون أو المكتب.",
+    galleryHeading: "المعرض",
+    piece: "عمل",
+    inquire: "أنا مهتم",
+    sold: "تم البيع",
+    emptyTitle: "أعمال جديدة قريباً",
+    emptyBody: "يتم تحديث المعرض حالياً — عودوا قريباً لاكتشاف الأعمال القادمة.",
+    copyright: "© " + new Date().getFullYear() + " sharing art 4 ∞ — جميع الحقوق محفوظة."
+  }
+};
+
+/* =====================================================================
+   3) ICONS (inline SVG, monochrome — recolored via fill in CSS)
+   ===================================================================== */
+const ICONS = {
+  instagram: '<svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"/><path d="M18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.65396 4.27606C1 5.55953 1 7.23969 1 10.6V13.4C1 16.7603 1 18.4405 1.65396 19.7239C2.2292 20.8529 3.14708 21.7708 4.27606 22.346C5.55953 23 7.23969 23 10.6 23H13.4C16.7603 23 18.4405 23 19.7239 22.346C20.8529 21.7708 21.7708 20.8529 22.346 19.7239C23 18.4405 23 16.7603 23 13.4V10.6C23 7.23969 23 5.55953 22.346 4.27606C21.7708 3.14708 20.8529 2.2292 19.7239 1.65396C18.4405 1 16.7603 1 13.4 1H10.6C7.23969 1 5.55953 1 4.27606 1.65396C3.14708 2.2292 2.2292 3.14708 1.65396 4.27606ZM13.4 3H10.6C8.88684 3 7.72225 3.00156 6.82208 3.0751C5.94524 3.14674 5.49684 3.27659 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3.27659 5.49684 3.14674 5.94524 3.0751 6.82208C3.00156 7.72225 3 8.88684 3 10.6V13.4C3 15.1132 3.00156 16.2777 3.0751 17.1779C3.14674 18.0548 3.27659 18.5032 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C5.49684 20.7234 5.94524 20.8533 6.82208 20.9249C7.72225 20.9984 8.88684 21 10.6 21H13.4C15.1132 21 16.2777 20.9984 17.1779 20.9249C18.0548 20.8533 18.5032 20.7234 18.816 20.564C19.5686 20.1805 20.1805 19.5686 20.564 18.816C20.7234 18.5032 20.8533 18.0548 20.9249 17.1779C20.9984 16.2777 21 15.1132 21 13.4V10.6C21 8.88684 20.9984 7.72225 20.9249 6.82208C20.8533 5.94524 20.7234 5.49684 20.564 5.18404C20.1805 4.43139 19.5686 3.81947 18.816 3.43597C18.5032 3.27659 18.0548 3.14674 17.1779 3.0751C16.2777 3.00156 15.1132 3 13.4 3Z"/></svg>',
+  phone: '<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.7 3.6 4.9 6.3 6.3l2.1-2.1c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C11 21 3 13 3 4.4c0-.6.4-1 1-1h3.6c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.1c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.2.8.8-3.1-.2-.3C4 14.8 3.6 13.4 3.6 12c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4-3.8 8.4-8.4 8.4zm4.6-6.3c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.2.2-.3.2-.5.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.4-1.8-.2-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.4.1-.2 0-.4 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1.1 2.6c.1.2 1.9 2.9 4.6 4 .6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z"/></svg>',
+  imgOff: '<svg viewBox="0 0 24 24"><path d="M21 5H5.8L4.4 3.6 3 5l1.6 1.6V19a2 2 0 002 2h13.4l1.4 1.4 1.4-1.4L21 5zM7.6 8H19v9.4l-6.3-6.3-1.8 2.1L7.6 8.9V8zM5 19V9.2L14.8 19H5z"/></svg>'
+};
+
+function contactIconMarkup(key){ return ICONS[key] || ""; }
+
+/* =====================================================================
+   4) RENDER LOGIC
+   ===================================================================== */
+let currentLang = "fr";
+
+function buildContactList(target, floatingOnly){
+  const frag = document.createDocumentFragment();
+  Object.keys(CONTACT_CONFIG).forEach(function(key){
+    const c = CONTACT_CONFIG[key];
+    if(!c.enabled) return;
+    if(floatingOnly && !c.floating) return;
+    if(!floatingOnly && c.floating && target === "floating-skip") return;
+
+    const a = document.createElement("a");
+    a.href = c.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+
+    if(c.label=="+212 6 52 61 80 38")
+    {
+      a.dir = "ltr";
+    }
+
+    if(floatingOnly){
+      a.className = "floating-btn";
+      a.innerHTML = contactIconMarkup(key);
+      a.setAttribute("aria-label", c.label);
+    } else {
+      a.innerHTML = contactIconMarkup(key) + "<span>" + c.label + "</span>";
+    }
+    frag.appendChild(a);
+  });
+  return frag;
+}
+
+function renderContacts(){
+  document.getElementById("contactInlineTop").innerHTML = "";
+  document.getElementById("contactInlineTop").appendChild(buildContactList(null, false));
+
+  document.getElementById("contactFooter").innerHTML = "";
+  document.getElementById("contactFooter").appendChild(buildContactList(null, false));
+
+  document.getElementById("floatingContacts").innerHTML = "";
+  document.getElementById("floatingContacts").appendChild(buildContactList(null, true));
+}
+
+function renderGraffiti(){
+  const top = document.getElementById("graffitiTop");
+  const bg = document.getElementById("graffitiBg");
+  top.style.display = "none";
+  bg.style.display = "none";
+
+  if(!GRAFFITI_CONFIG.enabled || GRAFFITI_CONFIG.mode === "none") return;
+
+  if(GRAFFITI_CONFIG.mode === "top"){
+    top.style.display = "block";
+    const track = document.getElementById("graffitiTrack");
+    track.innerHTML = "<span>" + GRAFFITI_CONFIG.text + "</span><span>" + GRAFFITI_CONFIG.text + "</span>";
+  } else if(GRAFFITI_CONFIG.mode === "bg"){
+    bg.style.display = "flex";
+    document.getElementById("graffitiBgText").textContent = GRAFFITI_CONFIG.text;
+  }
+}
+
+function priceLabel(piece){
+  return '<span class="num">' + piece.price.toLocaleString() + '</span> ' + piece.currency;
+}
+
+function renderGallery(){
+  const list = document.getElementById("galleryList");
+  const count = document.getElementById("galleryCount");
+  list.innerHTML = "";
+
+  count.textContent = ARTWORKS.length
+    ? String(ARTWORKS.length).padStart(2, "0")
+    : "";
+
+  if(ARTWORKS.length === 0){
+    const t = I18N[currentLang];
+    const empty = document.createElement("div");
+    empty.className = "gallery-empty";
+    empty.innerHTML = "<h3>" + t.emptyTitle + "</h3><p>" + t.emptyBody + "</p>";
+    list.appendChild(empty);
+    return;
+  }
+
+  const t = I18N[currentLang];
+
+  ARTWORKS.forEach(function(piece, index){
+    const el = document.createElement("article");
+    el.className = "piece";
+
+    const placeholderLabel = currentLang === "ar" ? "الصورة قريباً" : currentLang === "fr" ? "Image à venir" : "Image coming soon";
+
+    const frameHtml = piece.image
+      ? '<div class="piece-frame"><div class="corner tl"></div><div class="corner br"></div><img src="' + piece.image + '" alt="' + (piece.title[currentLang] || "") + '"></div>'
+      : '<div class="piece-frame placeholder">' + ICONS.imgOff + '<span>' + placeholderLabel + '</span></div>';
+
+    const footerHtml = piece.sold
+      ? '<span class="piece-sold">' + t.sold + '</span>'
+      : '<span class="piece-price">' + priceLabel(piece) + '</span><a class="piece-cta" href="' + (CONTACT_CONFIG.whatsapp.enabled ? CONTACT_CONFIG.whatsapp.url : (CONTACT_CONFIG.instagram.url || "#")) + "?text=Bonjour, je viens de votre site web et je suis intéressé(e) par votre œuvre intitulée « " + piece.title.fr + " »."+'" target="_blank" rel="noopener noreferrer">' + t.inquire + '</a>';
+
+    el.innerHTML =
+      frameHtml +
+      '<div class="piece-body">' +
+        '<div class="piece-num">' + t.piece + ' ' + String(index + 1).padStart(2, "0") + '</div>' +
+        '<h3 class="piece-title">' + (piece.title[currentLang] || "") + '</h3>' +
+        '<p class="piece-meta">' + (piece.medium[currentLang] || "") + '</p>' +
+        '<p class="piece-desc">' + (piece.description[currentLang] || "") + '</p>' +
+        '<div class="piece-footer">' + footerHtml + '</div>' +
+      '</div>';
+
+    list.appendChild(el);
+  });
+}
+
+function applyTranslations(){
+  const t = I18N[currentLang];
+  document.getElementById("txt-tagline").textContent = t.tagline;
+  document.getElementById("txt-delivery-top").textContent = t.delivery;
+  document.getElementById("txt-intro").textContent = t.intro;
+  document.getElementById("txt-gallery-heading").textContent = t.galleryHeading;
+  document.getElementById("txt-delivery-footer").textContent = t.delivery;
+  document.getElementById("txt-copyright").textContent = t.copyright;
+
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = t.dir;
+  document.body.classList.toggle("lang-ar", currentLang === "ar");
+}
+
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll(".lang-switch button").forEach(function(btn){
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
+  applyTranslations();
+  renderGallery();
+}
+
+document.getElementById("langSwitch").addEventListener("click", function(e){
+  const btn = e.target.closest("button[data-lang]");
+  if(btn) setLang(btn.dataset.lang);
+});
+
+/* =====================================================================
+   5) INIT
+   ===================================================================== */
+renderContacts();
+renderGraffiti();
+setLang("fr");
+</script>
+</body>
+</html>
